@@ -5,6 +5,7 @@ import {BootstrapVueNext} from 'bootstrap-vue-next'
 import './assets/main.css'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue-next/dist/bootstrap-vue-next.css'
+import './assets/my-styles.scss'
 
 import App from './App.vue'
 import router from './router'

@@ -1,0 +1,31 @@
+div {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+$main-bg-color: #2a2931;
+$rated: #ffd700;
+$default-text-color: #fff;
+$default_bg_color: #000;
+
+@mixin flexy {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@mixin movie_base {
+    margin: 10px;
+    position: relative;
+}
+
+@mixin movie__average {
+    position: absolute;
+    top: 10px;
+    color: $default-text-color;
+    @include flexy;
+}
