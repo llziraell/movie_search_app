@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount } from "vue"
+import { onBeforeMount, ref, computed } from "vue"
 
 import NavBar from "@/components/NavBar.vue"
 import MovieCard from "@/components/MovieCard.vue"
@@ -10,23 +10,73 @@ const Films = useFilmsStore()
 onBeforeMount(() => {
     Films.getFilms()
 })
+
+const currentPage = ref(1)
+
+const paginatedFilms = computed(() => {
+    if (Films.films) {
+        const start = (currentPage.value - 1) * Films.perPage
+        const end = start + Films.perPage
+        console.log([start, end])
+        return Films.films.slice(start, end)
+    }
+})
 </script>
 
 <template>
     <NavBar />
-    <div class="container">
-        <MovieCard
-            v-for="film in Films.films"
-            :movieData="film"
-        ></MovieCard>
+    <div class="cont">
+        <div class="movie_cont">
+            <MovieCard
+                v-for="film in paginatedFilms"
+                :movieData="film"
+                :key="film.id"
+            ></MovieCard>
+        </div>
     </div>
-    <div class="footer"></div>
+    <div class="pagination">
+        <b-pagination
+            class="custom-pagination"
+            v-model="currentPage"
+            :total-rows="Films.totalFilms"
+            :per-page="Films.perPage"
+            first-number
+            last-number
+        />
+    </div>
 </template>
 
 <style lang="scss">
 @import "@/assets/my-styles.scss";
 
-.container {
+.pagination {
+    display: flex;
+    justify-content: center;
     background-color: $main-bg-color;
+}
+
+.custom-pagination .page-item.active .page-link {
+    background-color: $rated;
+    border-color: $default_bg_color;
+    color: $default_bg_color;
+}
+
+.custom-pagination .page-item .page-link {
+    background-color: $main-bg-color;
+    border-color: $default_bg_color;
+    color: $default_text_color;
+}
+
+.cont {
+    background-color: $main-bg-color;
+}
+
+.movie_cont {
+    display: flex;
+    background-color: $main-bg-color;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 </style>

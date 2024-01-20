@@ -6,6 +6,7 @@
         toggleable="lg"
         variant="dark"
         v-b-color-mode="'dark'"
+        sticky="top"
     >
         <b-navbar-brand href="#">Поиск кино</b-navbar-brand>
         <b-navbar-toggle target="nav-collapse" />

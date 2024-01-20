@@ -3,6 +3,8 @@ import { defineStore } from "pinia"
 export const useFilmsStore = defineStore("films", {
     state: () => ({
         films: null,
+        perPage: 25,
+        totalFilms: 0,
     }),
     actions: {
         async getFilms() {
@@ -19,6 +21,7 @@ export const useFilmsStore = defineStore("films", {
                 const responseData = await response.json()
 
                 this.films = responseData
+                this.totalFilms = responseData.length
                 console.log(responseData)
             } catch (error) {
                 console.error("Ошибка загрузки данных:", error)
