@@ -7,10 +7,15 @@ body {
     padding: 0;
 }
 
+
 $main-bg-color: #2a2931;
 $rated: #ffd700;
 $default-text-color: #fff;
 $default_bg_color: #000;
+
+.cont {
+    background-color: $main-bg-color;
+}
 
 @mixin flexy {
     display: flex;

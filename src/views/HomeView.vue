@@ -26,11 +26,37 @@ const paginatedFilms = computed(() => {
 <template>
     <NavBar />
     <div class="cont">
+        <div v-if="Films.isSearchBtnActive">
+            <div class="title-line">
+                <span
+                    >Найдено
+                    <span
+                        @click="Films.toggleSearchBtn()"
+                        style="cursor: pointer"
+                        >&#10006;</span
+                    ></span
+                >
+            </div>
+            <div class="movie_cont">
+                <MovieCard
+                    v-for="film in Films.searchedFilms"
+                    :movieData="film"
+                    :key="film.id"
+                    @click="
+                        $router.push({ name: 'film', params: { id: film.id } })
+                    "
+                ></MovieCard>
+            </div>
+            <div class="title-line">
+                <span>Другие</span>
+            </div>
+        </div>
         <div class="movie_cont">
             <MovieCard
                 v-for="film in paginatedFilms"
                 :movieData="film"
                 :key="film.id"
+                @click="$router.push({ name: 'film', params: { id: film.id } })"
             ></MovieCard>
         </div>
     </div>
@@ -67,10 +93,6 @@ const paginatedFilms = computed(() => {
     color: $default_text_color;
 }
 
-.cont {
-    background-color: $main-bg-color;
-}
-
 .movie_cont {
     display: flex;
     background-color: $main-bg-color;
@@ -78,5 +100,31 @@ const paginatedFilms = computed(() => {
     justify-content: space-around;
     padding-top: 15px;
     padding-bottom: 15px;
+}
+
+.title-line {
+    font-size: 15px;
+    color: rgb(50, 50, 50);
+    text-transform: uppercase;
+    line-height: 1.5;
+    text-align: center;
+    position: relative;
+}
+
+.title-line span {
+    background: $main-bg-color;
+    color: $default-text-color;
+    display: inline-block;
+    padding: 0 15px;
+    position: relative;
+}
+
+.title-line:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    border-top: 2px solid $default-text-color;
 }
 </style>

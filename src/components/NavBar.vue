@@ -1,4 +1,10 @@
 <script setup>
+import { ref } from "vue"
+
+import { useFilmsStore } from "@/stores/FilmsStore.js"
+const Films = useFilmsStore()
+
+const inputFilm = ref("")
 </script>
 
 <template>
@@ -43,16 +49,43 @@
                 </b-nav-item-dropdown>
             </b-navbar-nav>
             <b-nav-form class="d-flex">
-                <b-form-input
-                    class="me-2"
-                    placeholder="Search"
-                />
-                <b-button
-                    type="submit"
-                    variant="outline-success"
-                    >Search</b-button
-                >
+                <b-dropdown>
+                    <template
+                        #button-content
+                        class="input_form"
+                    >
+                        <b-form-input
+                            class="me-2"
+                            placeholder="Ищу..."
+                            type="text"
+                            v-model.trim="inputFilm"
+                            @input="Films.searchFilms(inputFilm)"
+                            style="width: 270px"
+                        />
+                        <b-button
+                            type="submit"
+                            variant="outline-success"
+                            @click="Films.toggleSearchBtn()"
+                            >Найти</b-button
+                        >
+                    </template>
+                    <div v-show = "Films.searchedFilms.length !== 0">
+                        <b-dropdown-item
+                        v-for="film in Films.searchedFilms"
+                        @click="inputFilm = film.name"
+                        >{{ film.name }}</b-dropdown-item
+                    >
+                    </div>
+                </b-dropdown>
             </b-nav-form>
         </b-collapse>
     </b-navbar>
 </template>
+
+<style lang="scss">
+.btn-group > .btn {
+    display: flex;
+    background: none;
+    flex: none;
+}
+</style>
