@@ -21,6 +21,9 @@ const paginatedFilms = computed(() => {
         return Films.films.slice(start, end)
     }
 })
+
+
+
 </script>
 
 <template>
@@ -38,26 +41,30 @@ const paginatedFilms = computed(() => {
                 >
             </div>
             <div class="movie_cont">
-                <MovieCard
-                    v-for="film in Films.searchedFilms"
-                    :movieData="film"
+                <router-link
+                    v-for="film in paginatedFilms"
                     :key="film.id"
-                    @click="
-                        $router.push({ name: 'film', params: { id: film.id } })
-                    "
-                ></MovieCard>
+                    :to="{ name: 'film', params: { id: film.id } }"
+                >
+                    <MovieCard
+                        :movieData="film"
+                    />
+                </router-link>
             </div>
             <div class="title-line">
                 <span>Другие</span>
             </div>
         </div>
         <div class="movie_cont">
-            <MovieCard
+            <router-link
                 v-for="film in paginatedFilms"
-                :movieData="film"
                 :key="film.id"
-                @click="$router.push({ name: 'film', params: { id: film.id } })"
-            ></MovieCard>
+                :to="{ name: 'film', params: { id: film.id } }"
+            >
+                <MovieCard
+                    :movieData="film"
+                />
+            </router-link>
         </div>
     </div>
     <div class="pagination">

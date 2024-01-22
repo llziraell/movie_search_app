@@ -6,7 +6,8 @@ export const useFilmsStore = defineStore("films", {
         perPage: 25,
         totalFilms: 0,
         searchedFilms: [],
-        isSearchBtnActive: false
+        isSearchBtnActive: false,
+        selectedFilm: [],
     }),
     actions: {
         async getFilms() {
@@ -21,7 +22,7 @@ export const useFilmsStore = defineStore("films", {
 
                 this.films = responseData
                 this.totalFilms = responseData.length
-                console.log(responseData)
+                localStorage.setItem("films", JSON.stringify(responseData))
             } catch (error) {
                 console.error("Ошибка загрузки данных:", error)
             }
@@ -29,16 +30,28 @@ export const useFilmsStore = defineStore("films", {
 
         searchFilms(inputFilm) {
             if (inputFilm === "") {
-                return
+                return (this.searchedFilms = [])
             } else {
-                this.searchedFilms = this.films.filter((film) =>
-                    film.name.toLowerCase().includes(inputFilm.toLowerCase())
-                )
+                this.searchedFilms = this.films.filter((film) => {
+                    return film.name
+                        .toLowerCase()
+                        .includes(inputFilm.toLowerCase())
+                })
             }
         },
 
         toggleSearchBtn() {
-            this.isSearchBtnActive = !this.isSearchBtnActive
-        }
+            if (this.searchedFilms.length !== 0) {
+                this.isSearchBtnActive = !this.isSearchBtnActive
+            }
+        },
+
+        getFilmById(film_id) {
+            const storedFilms = JSON.parse(localStorage.getItem("films")) || []
+            this.selectedFilm = storedFilms.filter((film) => {
+                return film.id === film_id
+            })
+            console.log(this.selectedFilm)
+        },
     },
 })

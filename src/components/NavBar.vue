@@ -65,7 +65,7 @@ const inputFilm = ref("")
                         <b-button
                             type="submit"
                             variant="outline-success"
-                            @click="Films.toggleSearchBtn()"
+                            @click.prevent="Films.toggleSearchBtn()"
                             >Найти</b-button
                         >
                     </template>
