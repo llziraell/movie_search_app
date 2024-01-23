@@ -4,7 +4,8 @@ export const useLocalStore = defineStore("favourites", {
     state: () => ({
         maxRate: 10,
         favourites: [],
-        currentRate: 0
+        currentRate: 0,
+        currentBookmark: false
     }),
     actions: {
         getLocalStoreData(film_id) {
@@ -12,6 +13,7 @@ export const useLocalStore = defineStore("favourites", {
             JSON.parse(localStorage.getItem("favourites")) || []
             const existFilm = this.favourites.find(film => film.id === film_id)
             this.currentRate = existFilm ? existFilm.rate : 0
+            this.currentBookmark = existFilm ? existFilm.bookmark : false
         },
 
         setRate(rate, film_id) {
@@ -27,7 +29,7 @@ export const useLocalStore = defineStore("favourites", {
             if (existFilmIndex !== -1) {
                 // существует
                 if (this.favourites[existFilmIndex].rate === Number(film_info.rate)) {
-                    this.favourites.splice(existFilmIndex, 1) // одинаковые оценки
+                    this.favourites[existFilmIndex].rate = 0 // одинаковые оценки
                     this.currentRate = 0
                 } else {
                     this.favourites[existFilmIndex].rate = film_info.rate // измененная оценка
@@ -39,6 +41,30 @@ export const useLocalStore = defineStore("favourites", {
             }
 
             localStorage.setItem("favourites", JSON.stringify(this.favourites))
+        },
+
+        setBookmark(film_id){
+            const film_info = {
+                id: film_id,
+                bookmark: true,
+            }
+
+            const existFilmIndex = this.favourites.findIndex(
+                (film) => film.id === film_info.id
+            )
+
+            if (existFilmIndex !== -1) {
+                // существует
+                this.favourites[existFilmIndex].bookmark = !this.favourites[existFilmIndex].bookmark // одинаковые оценки
+                this.currentBookmark = this.favourites[existFilmIndex].bookmark
+
+            } else {
+                this.favourites.push(film_info) // оценки еще неt
+                this.currentBookmark = true
+            }
+
+            localStorage.setItem("favourites", JSON.stringify(this.favourites))
+
         },
 
     },

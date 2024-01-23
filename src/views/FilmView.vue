@@ -25,7 +25,6 @@ onBeforeMount(() => {
 onMounted(() => {
     Favourites.getLocalStoreData(film_id.value)
 })
-
 </script>
 
 <template>
@@ -46,23 +45,22 @@ onMounted(() => {
                 :src="Films.selectedFilm[0].poster.previewUrl"
                 class="movie__cover"
             />
-            <!-- <div
-                class="movie__average_0"
-                @click="LocalStore.toggleBookmark(Films.selectedFilm[0].id)"
-                :style="{
-                    backgroundColor: LocalStore.bookmarks_ids.includes(
-                        Films.selectedFilm[0].id
-                    )
-                        ? 'yellow'
-                        : 'transparent',
-                }"
-            ></div> -->
+            <span
+                class="movie__bookmark"
+                @click="Favourites.setBookmark(film_id)"
+                :class="
+                    Favourites.currentBookmark
+                        ? 'active_bookmark_img'
+                        : 'default_bookmark_img'
+                "
+            >
+            </span>
             <span
                 class="rates"
                 v-for="rate in Favourites.maxRate"
-                :key = "rate"
-                @click = "Favourites.setRate(rate, film_id)"
-                :class = "{rated: rate <= Favourites.currentRate}"
+                :key="rate"
+                @click="Favourites.setRate(rate, film_id)"
+                :class="{ rated: rate <= Favourites.currentRate }"
                 >★</span
             >
         </div>
@@ -155,14 +153,27 @@ onMounted(() => {
     height: 100%;
 }
 
-.movie__average_0 {
-    @include movie__average;
+.movie__bookmark {
+    top: 10px;
     right: 10px;
-    width: 30px;
-    height: 30px;
-    background-image: url("@/assets/bookmark.png");
-    background-repeat: none;
     cursor: pointer;
+    position: absolute;
+}
+
+.default_bookmark_img,
+.active_bookmark_img {
+    background-size: contain; 
+    background-repeat: no-repeat;
+    width: 20%;
+    height: 20%;
+}
+
+.default_bookmark_img {
+    background-image: url("@/assets/default_bookmark.png");
+}
+
+.active_bookmark_img {
+    background-image: url("@/assets/active_bookmark.png");
 }
 
 .rated {
