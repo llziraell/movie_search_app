@@ -1,14 +1,18 @@
 <script setup>
 import { useRoute } from "vue-router"
-import { ref, onBeforeMount } from "vue"
+import { ref, onBeforeMount, onMounted } from "vue"
 import { useFilmsStore } from "@/stores/FilmsStore.js"
+import { useLocalStore } from "@/stores/LocalStore.js"
 
 const route = useRoute()
+const film_id = ref(0)
 const Films = useFilmsStore()
+const Favourites = useLocalStore()
 const isBackgroundLoaded = ref(false)
 
 onBeforeMount(() => {
-    Films.getFilmById(route.params.id)
+    film_id.value = route.params.id
+    Films.getFilmById(film_id.value)
     const backgroundImageUrl = Films.selectedFilm[0].poster.url
 
     const image = new Image()
@@ -17,6 +21,11 @@ onBeforeMount(() => {
         isBackgroundLoaded.value = true
     }
 })
+
+onMounted(() => {
+    Favourites.getLocalStoreData(film_id.value)
+})
+
 </script>
 
 <template>
@@ -37,7 +46,25 @@ onBeforeMount(() => {
                 :src="Films.selectedFilm[0].poster.previewUrl"
                 class="movie__cover"
             />
-            <div class="movie__average_0"></div>
+            <!-- <div
+                class="movie__average_0"
+                @click="LocalStore.toggleBookmark(Films.selectedFilm[0].id)"
+                :style="{
+                    backgroundColor: LocalStore.bookmarks_ids.includes(
+                        Films.selectedFilm[0].id
+                    )
+                        ? 'yellow'
+                        : 'transparent',
+                }"
+            ></div> -->
+            <span
+                class="rates"
+                v-for="rate in Favourites.maxRate"
+                :key = "rate"
+                @click = "Favourites.setRate(rate, film_id)"
+                :class = "{rated: rate <= Favourites.currentRate}"
+                >★</span
+            >
         </div>
         <div
             class="film_text"
@@ -140,6 +167,12 @@ onBeforeMount(() => {
 
 .rated {
     color: $rated;
+}
+
+.rates {
+    margin-top: 10px;
+    margin-right: 7px;
+    cursor: pointer;
 }
 
 .recommand {
