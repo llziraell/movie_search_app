@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from "vue"
 
+import SortBlock from '@/components/SortBlock.vue'
+
 import { useFilmsStore } from "@/stores/FilmsStore.js"
 const Films = useFilmsStore()
 
@@ -30,23 +32,7 @@ const inputFilm = ref("")
             </b-navbar-nav>
             <!-- Right aligned nav items -->
             <b-navbar-nav class="ms-auto mb-2 mb-lg-0">
-                <b-nav-item-dropdown
-                    text="Lang"
-                    right
-                >
-                    <b-dropdown-item href="#">EN</b-dropdown-item>
-                    <b-dropdown-item href="#">ES</b-dropdown-item>
-                    <b-dropdown-item href="#">RU</b-dropdown-item>
-                    <b-dropdown-item href="#">FA</b-dropdown-item>
-                </b-nav-item-dropdown>
-                <b-nav-item-dropdown right>
-                    <!-- Using 'button-content' slot -->
-                    <template #button-content>
-                        <em>User</em>
-                    </template>
-                    <b-dropdown-item href="#">Profile</b-dropdown-item>
-                    <b-dropdown-item href="#">Sign Out</b-dropdown-item>
-                </b-nav-item-dropdown>
+                <sort-block></sort-block>
             </b-navbar-nav>
             <b-nav-form class="d-flex">
                 <b-dropdown>
