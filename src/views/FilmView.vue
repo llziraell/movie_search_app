@@ -24,6 +24,7 @@ onBeforeMount(() => {
 
 onMounted(() => {
     Favourites.getLocalStoreData(film_id.value)
+    
 })
 </script>
 

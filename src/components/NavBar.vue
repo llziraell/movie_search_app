@@ -16,21 +16,13 @@ const inputFilm = ref("")
         v-b-color-mode="'dark'"
         sticky="top"
     >
-        <b-navbar-brand href="#">Поиск кино</b-navbar-brand>
+        <b-navbar-brand href="#" @click="$router.push(`${'/'}`)">Поиск кино</b-navbar-brand>
         <b-navbar-toggle target="nav-collapse" />
         <b-collapse
             id="nav-collapse"
             is-nav
         >
-            <b-navbar-nav>
-                <b-nav-item href="#">Link</b-nav-item>
-                <b-nav-item
-                    href="#"
-                    disabled
-                    >Disabled</b-nav-item
-                >
-            </b-navbar-nav>
-            <!-- Right aligned nav items -->
+            <router-link to="favourites" class = "favourites_link">Избранное</router-link>
             <b-navbar-nav class="ms-auto mb-2 mb-lg-0">
                 <sort-block></sort-block>
             </b-navbar-nav>
@@ -73,5 +65,9 @@ const inputFilm = ref("")
     display: flex;
     background: none;
     flex: none;
+}
+
+.favourites_link {
+    color: gold;
 }
 </style>
