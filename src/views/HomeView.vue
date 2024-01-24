@@ -12,7 +12,7 @@ const SortedStore = useSortStore()
 
 onBeforeMount(() => {
     Films.getFilms()
-    SortedStore.getSortedFilms()
+    // SortedStore.getSortedFilms()
 })
 
 const currentPageFilm = ref(1)
@@ -33,10 +33,12 @@ const paginatedFilms = computed(() => {
         }
     }
 })
+
+const view = ref('films')
 </script>
 
 <template>
-    <NavBar />
+    <NavBar currentView ="films" />
     <div class="cont">
         <div v-if="Films.isSearchBtnActive">
             <div class="title-line">
@@ -64,7 +66,7 @@ const paginatedFilms = computed(() => {
         </div>
         <div class="movie_cont">
             <router-link
-                v-if="SortedStore.sortedFilms.length !== 0"
+                v-if="SortedStore.sortedFilms && SortedStore.sortedFilms.length !== 0"
                 v-for="sorted_film in paginatedFilms(SortedStore)"
                 :key="sorted_film.id"
                 :to="{ name: 'film', params: { id: sorted_film.id } }"
@@ -83,7 +85,7 @@ const paginatedFilms = computed(() => {
     </div>
     <div class="pagination">
         <b-pagination
-            v-if="SortedStore.sortedFilms.length !== 0"
+            v-if="SortedStore.sortedFilms && SortedStore.sortedFilms.length !== 0"
             class="custom-pagination"
             v-model="currentPageSortedFilm"
             :total-rows="SortedStore.totalFilms"

@@ -1,10 +1,12 @@
 <script setup>
 import { useSortStore } from "@/stores/SortStore.js"
-import { computed, ref } from "vue"
+import { computed, ref , defineProps} from "vue"
+
+const props = defineProps({
+    currentView: String
+})
 
 const SortedStore = useSortStore()
-
-const maxRate = ref(10)
 
 const toggleYear = ref([
     { caption: "70-ые", state: false },
@@ -103,8 +105,9 @@ const clearStateButton = () => {
                 </b-button-group>
             </b-form-group>
             <div class="btn_zone">
-                <b-button @click="SortedStore.sortFilms(toggleYear, toggleRates, toggleMovieLength)">Найти</b-button>
+                <b-button @click="SortedStore.sortFilms(toggleYear, toggleRates, toggleMovieLength, props.currentView)">Найти</b-button>
                 <b-button @click.stop="clearStateButton">Очистить</b-button>
+               <b-button> {{ props.currentView}} </b-button>
             </div>
         </b-dropdown-form>
     </b-nav-item-dropdown>

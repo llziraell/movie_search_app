@@ -4,6 +4,8 @@ import { ref, onBeforeMount, onMounted } from "vue"
 import { useFilmsStore } from "@/stores/FilmsStore.js"
 import { useLocalStore } from "@/stores/LocalStore.js"
 
+import RecommendBlock from "@/components/RecommendBlock.vue"
+
 const route = useRoute()
 const film_id = ref(0)
 const Films = useFilmsStore()
@@ -13,6 +15,7 @@ const isBackgroundLoaded = ref(false)
 onBeforeMount(() => {
     film_id.value = route.params.id
     Films.getFilmById(film_id.value)
+
     const backgroundImageUrl = Films.selectedFilm[0].poster.url
 
     const image = new Image()
@@ -20,11 +23,12 @@ onBeforeMount(() => {
     image.onload = () => {
         isBackgroundLoaded.value = true
     }
+
+    Films.getRecommendFilms(Films.selectedFilm[0])
 })
 
 onMounted(() => {
     Favourites.getLocalStoreData(film_id.value)
-    
 })
 </script>
 
@@ -83,6 +87,20 @@ onMounted(() => {
                     style="filter: hue-rotate(90deg)"
                 />
                 {{ Films.selectedFilm[0].movieLength }} минут
+            </div>
+            <div class="recommend">
+                <h4 v-if="Films.recommendFilms.length !== 0">
+                    Смотреть похожие:
+                </h4>
+                <div class="film_circles">
+                    <router-link
+                        v-for="(film, index) in Films.recommendFilms"
+                        :key="index"
+                        :to="{ name: 'film', params: { id: film.id } }"
+                    >
+                    <RecommendBlock  :movieData="film"></RecommendBlock>
+                    </router-link>
+                </div>
             </div>
         </div>
     </div>
@@ -163,7 +181,7 @@ onMounted(() => {
 
 .default_bookmark_img,
 .active_bookmark_img {
-    background-size: contain; 
+    background-size: contain;
     background-repeat: no-repeat;
     width: 20%;
     height: 20%;
@@ -187,7 +205,7 @@ onMounted(() => {
     cursor: pointer;
 }
 
-.recommand {
+.recommend {
     margin-top: 40px;
     width: 100%;
     position: relative;

@@ -7,6 +7,12 @@ import { useFilmsStore } from "@/stores/FilmsStore.js"
 const Films = useFilmsStore()
 
 const inputFilm = ref("")
+
+const props = defineProps({
+    currentView: String
+})
+
+const tr = ref(true)
 </script>
 
 <template>
@@ -24,10 +30,10 @@ const inputFilm = ref("")
         >
             <router-link to="favourites" class = "favourites_link">Избранное</router-link>
             <b-navbar-nav class="ms-auto mb-2 mb-lg-0">
-                <sort-block></sort-block>
+                <sort-block :currentView = "props.currentView"></sort-block>
             </b-navbar-nav>
             <b-nav-form class="d-flex">
-                <b-dropdown>
+                <b-dropdown no-caret>
                     <template
                         #button-content
                         class="input_form"
@@ -47,8 +53,9 @@ const inputFilm = ref("")
                             >Найти</b-button
                         >
                     </template>
-                    <div v-show = "Films.searchedFilms.length !== 0">
+                    <div v-show = "tr === false">
                         <b-dropdown-item
+                        v-show = "tr === false"
                         v-for="film in Films.searchedFilms"
                         @click="inputFilm = film.name"
                         >{{ film.name }}</b-dropdown-item

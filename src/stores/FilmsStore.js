@@ -8,6 +8,7 @@ export const useFilmsStore = defineStore("films", {
         searchedFilms: [],
         isSearchBtnActive: false,
         selectedFilm: [],
+        recommendFilms: [],
     }),
     actions: {
         async getFilms() {
@@ -52,6 +53,24 @@ export const useFilmsStore = defineStore("films", {
                 return film.id === film_id
             })
             console.log(this.selectedFilm)
+        },
+
+        getRecommendFilms(selectedFilm) {
+            const films = JSON.parse(localStorage.getItem("films"))
+
+            this.recommendFilms = films.filter((film) => {
+                let nonRepeat = film.id !== selectedFilm.id
+                let byRate =
+                    parseInt(selectedFilm.rating.imdb) >= film.rating.imdb &&
+                    parseInt(selectedFilm.rating.imdb) <
+                        parseInt(film.rating.imdb) + 1
+                let byType = selectedFilm.type === film.type
+                return byType && byRate && nonRepeat
+            })
+            if (this.recommendFilms.length >= 5) {
+                this.recommendFilms = this.recommendFilms.slice(0, 5)
+            }
+            console.log(this.recommendFilms)
         },
     },
 })
