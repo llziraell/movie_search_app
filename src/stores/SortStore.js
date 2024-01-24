@@ -2,22 +2,24 @@ import { defineStore } from "pinia"
 
 export const useSortStore = defineStore("sortedFilms", {
     state: () => ({
-        films: null,
+        films_: null,
         optionsFilms: {},
         sortedFilms: null,
+        perPage: 25,
+        totalFilms: 0
     }),
     actions: {
         getFilmsOptions() {
-            this.films = JSON.parse(localStorage.getItem("films"))
+            this.films_ = JSON.parse(localStorage.getItem("films"))
 
-            const maxYear = Math.max(...this.films.map((film) => film.year))
-            const minYear = Math.min(...this.films.map((film) => film.year))
+            const maxYear = Math.max(...this.films_.map((film) => film.year))
+            const minYear = Math.min(...this.films_.map((film) => film.year))
 
             const maxMovieLength = Math.max(
-                ...this.films.map((film) => film.movieLength)
+                ...this.films_.map((film) => film.movieLength)
             )
             const minMovieLength = Math.min(
-                ...this.films.map((film) => film.movieLength)
+                ...this.films_.map((film) => film.movieLength)
             )
 
             this.optionsFilms = {
@@ -29,7 +31,17 @@ export const useSortStore = defineStore("sortedFilms", {
                 maxRating: 10,
             }
 
-            console.log(this.films)
+            console.log(this.films_)
+        },
+
+        getSortedFilms() {
+            this.sortedFilms = JSON.parse(localStorage.getItem('sortedFilms')) || []
+            console.log(this.sortedFilms)
+        },
+
+        clearSortedStore() {
+            this.sortedFilms = []
+            localStorage.removeItem('sortedFilms')
         },
 
         sortFilms(toggleYear, toggleRates, toggleMovieLength) {
@@ -37,7 +49,9 @@ export const useSortStore = defineStore("sortedFilms", {
             console.log(toggleRates)
             console.log(toggleMovieLength)
 
-            let films_for_sort = this.films.slice()
+            let films_for_sort = JSON.parse(localStorage.getItem("films"))
+
+            console.log(films_for_sort)
 
             console.log(toggleRates.map(item=> item.state))
 
@@ -69,17 +83,17 @@ export const useSortStore = defineStore("sortedFilms", {
                     return toggleYear.some(({ caption, state }) => {
                       switch (caption) {
                         case "70-ые":
-                          return state && film.year >= 1970 && film.year <= 1979;
+                          return state && film.year >= 1970 && film.year <= 1979
                         case "80-ые":
-                          return state && film.year >= 1980 && film.year <= 1989;
+                          return state && film.year >= 1980 && film.year <= 1989
                         case "90-ые":
-                          return state && film.year >= 1990 && film.year <= 1999;
+                          return state && film.year >= 1990 && film.year <= 1999
                         case "2000":
-                          return state && film.year >= 2000 && film.year <= 2009;
+                          return state && film.year >= 2000 && film.year <= 2009
                         case "2010":
-                          return state && film.year >= 2010 && film.year <= 2019;
+                          return state && film.year >= 2010 && film.year <= 2019
                         case "новое":
-                          return state && film.year >= 2020;
+                          return state && film.year >= 2020
                         default:
                           return false
                       }
@@ -90,10 +104,11 @@ export const useSortStore = defineStore("sortedFilms", {
             }
 
             this.sortedFilms = films_for_sort
+            localStorage.setItem('sortedFilms', JSON.stringify(this.sortedFilms))
+
+            this.totalFilms = this.sortedFilms.length
 
             console.log(this.sortedFilms)
-
-
         },
     },
 })

@@ -4,8 +4,6 @@ import { computed, ref } from "vue"
 
 const SortedStore = useSortStore()
 
-SortedStore.getFilmsOptions()
-
 const maxRate = ref(10)
 
 const toggleYear = ref([
@@ -52,6 +50,8 @@ const clearStateButton = () => {
     toggleYear.value.forEach((btn) => {
         btn.state = false
     })
+
+    SortedStore.clearSortedStore()
 }
 </script>
 

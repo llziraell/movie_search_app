@@ -7,23 +7,32 @@ import MovieCard from "@/components/MovieCard.vue"
 import { useFilmsStore } from "@/stores/FilmsStore"
 const Films = useFilmsStore()
 
+import { useSortStore } from "@/stores/SortStore"
+const SortedStore = useSortStore()
+
 onBeforeMount(() => {
     Films.getFilms()
+    SortedStore.getSortedFilms()
 })
 
-const currentPage = ref(1)
+const currentPageFilm = ref(1)
+const currentPageSortedFilm = ref(1)
 
 const paginatedFilms = computed(() => {
-    if (Films.films) {
-        const start = (currentPage.value - 1) * Films.perPage
-        const end = start + Films.perPage
-        console.log([start, end])
-        return Films.films.slice(start, end)
+    return (selectedStore) => {
+        if (Films.films) {
+            if (selectedStore.sortedFilms) {
+                const start = (currentPageSortedFilm.value - 1) * selectedStore.perPage
+                const end = start + selectedStore.perPage
+                return selectedStore.sortedFilms.slice(start, end)
+            } else if (selectedStore.films) {
+                const start = (currentPageFilm.value - 1) * selectedStore.perPage
+                const end = start + selectedStore.perPage
+                return selectedStore.films.slice(start, end)
+            }
+        }
     }
 })
-
-
-
 </script>
 
 <template>
@@ -46,9 +55,7 @@ const paginatedFilms = computed(() => {
                     :key="film.id"
                     :to="{ name: 'film', params: { id: film.id } }"
                 >
-                    <MovieCard
-                        :movieData="film"
-                    />
+                    <MovieCard :movieData="film" />
                 </router-link>
             </div>
             <div class="title-line">
@@ -57,20 +64,37 @@ const paginatedFilms = computed(() => {
         </div>
         <div class="movie_cont">
             <router-link
-                v-for="film in paginatedFilms"
+                v-if="SortedStore.sortedFilms.length !== 0"
+                v-for="sorted_film in paginatedFilms(SortedStore)"
+                :key="sorted_film.id"
+                :to="{ name: 'film', params: { id: sorted_film.id } }"
+            >
+                <MovieCard :movieData="sorted_film" />
+            </router-link>
+            <router-link
+                v-else
+                v-for="film in paginatedFilms(Films)"
                 :key="film.id"
                 :to="{ name: 'film', params: { id: film.id } }"
             >
-                <MovieCard
-                    :movieData="film"
-                />
+                <MovieCard :movieData="film" />
             </router-link>
         </div>
     </div>
     <div class="pagination">
         <b-pagination
+            v-if="SortedStore.sortedFilms.length !== 0"
             class="custom-pagination"
-            v-model="currentPage"
+            v-model="currentPageSortedFilm"
+            :total-rows="SortedStore.totalFilms"
+            :per-page="SortedStore.perPage"
+            first-number
+            last-number
+        />
+        <b-pagination
+            v-else
+            class="custom-pagination"
+            v-model="currentPageFilm"
             :total-rows="Films.totalFilms"
             :per-page="Films.perPage"
             first-number
