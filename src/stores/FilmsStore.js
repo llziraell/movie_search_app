@@ -30,6 +30,10 @@ export const useFilmsStore = defineStore("films", {
         },
 
         searchFilms(inputFilm) {
+            this.closeSearchedFilms()
+
+            console.log(inputFilm)
+
             if (inputFilm === "") {
                 return (this.searchedFilms = [])
             } else {
@@ -41,10 +45,29 @@ export const useFilmsStore = defineStore("films", {
             }
         },
 
-        toggleSearchBtn() {
-            if (this.searchedFilms.length !== 0) {
-                this.isSearchBtnActive = !this.isSearchBtnActive
+        //???
+        showSearchedFilms(inputFilm) {
+            const fullConcurrence = this.films.find(
+                (film) => film.name === inputFilm
+            )
+
+            // console.log(typeof(fullConcurrence))
+
+            if (fullConcurrence) {
+                this.searchedFilms = []
+                this.searchedFilms.push(fullConcurrence)
             }
+
+            console.log(typeof(this.searchedFilms))
+            if (this.searchedFilms.length !== 0) {
+                this.isSearchBtnActive = true
+            }
+
+            console.log(this.searchedFilms)
+        },
+
+        closeSearchedFilms() {
+            this.isSearchBtnActive = false
         },
 
         getFilmById(film_id) {

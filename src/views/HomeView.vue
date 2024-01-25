@@ -45,7 +45,7 @@ const view = ref('films')
                 <span
                     >Найдено
                     <span
-                        @click="Films.toggleSearchBtn()"
+                        @click="Films.closeSearchedFilms()"
                         style="cursor: pointer"
                         >&#10006;</span
                     ></span
@@ -53,7 +53,8 @@ const view = ref('films')
             </div>
             <div class="movie_cont">
                 <router-link
-                    v-for="film in paginatedFilms"
+                    
+                    v-for="film in Films.searchedFilms"
                     :key="film.id"
                     :to="{ name: 'film', params: { id: film.id } }"
                 >

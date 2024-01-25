@@ -49,13 +49,12 @@ const tr = ref(true)
                         <b-button
                             type="submit"
                             variant="outline-success"
-                            @click.prevent="Films.toggleSearchBtn()"
+                            @click="Films.showSearchedFilms(inputFilm)"
                             >Найти</b-button
                         >
                     </template>
-                    <div v-show = "tr === false">
+                    <div >
                         <b-dropdown-item
-                        v-show = "tr === false"
                         v-for="film in Films.searchedFilms"
                         @click="inputFilm = film.name"
                         >{{ film.name }}</b-dropdown-item
