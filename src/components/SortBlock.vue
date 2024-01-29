@@ -1,12 +1,14 @@
 <script setup>
+import { computed, ref, defineProps } from "vue"
+
 import { useSortStore } from "@/stores/SortStore.js"
-import { computed, ref , defineProps} from "vue"
+const SortedStore = useSortStore()
 
 const props = defineProps({
-    currentView: String
+    currentView: String,
 })
 
-const SortedStore = useSortStore()
+const currentRate = ref(0)
 
 const toggleYear = ref([
     { caption: "70-ые", state: false },
@@ -18,13 +20,11 @@ const toggleYear = ref([
 ])
 
 const toggleMovieLength = ref([
-    { caption: "короткий метр", state: false },
-    { caption: "полнометражный фильм (90+ мин)", state: false },
+    { caption: "короткий метр (до 90 мин)", state: false },
+    { caption: "полнометражный", state: false },
 ])
 
 const toggleRates = ref(Array.from({ length: 10 }, () => ({ state: false })))
-
-const btnStates = computed(() => toggleYear.value.map((btn) => btn.state))
 
 const toggleYaerButton = (index) => {
     toggleYear.value[index].state = !toggleYear.value[index].state
@@ -34,6 +34,7 @@ const toggleRateButton = (index) => {
     toggleRates.value.forEach((btn, i) => {
         btn.state = i <= index
     })
+    currentRate.value = index
 }
 
 const toggleMovieLengthButton = (index) => {
@@ -41,6 +42,8 @@ const toggleMovieLengthButton = (index) => {
         btn.state = i === index
     })
 }
+
+const btnStates = computed(() => toggleYear.value.map((btn) => btn.state))
 
 const clearStateButton = () => {
     toggleMovieLength.value.forEach((btn) => {
@@ -60,54 +63,70 @@ const clearStateButton = () => {
 <template>
     <b-nav-item-dropdown no-caret>
         <template #button-content>
-            <b-button
-                type="submit"
-                variant="outline-success"
-                >Фильтр</b-button
-            >
+            <b-button class="btn_disabled">Фильтр</b-button>
         </template>
         <b-dropdown-form class="sort_form">
-            <b-form-group label="Год:">
+            <b-form-group>
+                <p>Год:</p>
                 <b-button-group size="sm">
                     <b-button
                         v-for="(btn, idx) in toggleYear"
                         :key="idx"
                         :pressed.sync="btn.state"
-                        :variant="btn.state ? 'success' : 'primary'"
+                        :variant="btn.state ? 'warning' : 'primary'"
+                        style="color: #fff"
                         @click.stop="toggleYaerButton(idx)"
                     >
                         {{ btn.caption }}
                     </b-button>
                 </b-button-group>
-
-                <b-button-group size="sm">
-                    <b-button
+                <p>Рейтинг:</p>
+                <b-button-group
+                    size="sm"
+                    class="rates_group"
+                >
+                    <span
                         v-for="(btn, idx) in toggleRates"
+                        class="rates"
                         :key="idx"
                         :pressed.sync="btn.state"
-                        :variant="btn.state ? 'success' : 'primary'"
                         @click.stop="toggleRateButton(idx)"
+                        :class="{ rated: btn.state === true }"
+                        >★</span
                     >
-                        {{ idx + 1 }}
-                    </b-button>
                 </b-button-group>
-
+                <p>Хронометраж:</p>
                 <b-button-group size="sm">
                     <b-button
                         v-for="(btn, idx) in toggleMovieLength"
                         :key="idx"
                         :pressed.sync="btn.state"
-                        :variant="btn.state ? 'success' : 'primary'"
+                        :variant="btn.state ? 'warning' : 'primary'"
                         @click.stop="toggleMovieLengthButton(idx)"
+                        style="color: #fff"
                     >
                         {{ btn.caption }}
                     </b-button>
                 </b-button-group>
             </b-form-group>
             <div class="btn_zone">
-                <b-button @click="SortedStore.sortFilms(toggleYear, toggleRates, toggleMovieLength, props.currentView)">Найти</b-button>
-                <b-button @click.stop="clearStateButton">Очистить</b-button>
-               <b-button> {{ props.currentView}} </b-button>
+                <b-button
+                    variant="outline-success"
+                    @click="
+                        SortedStore.sortFilms(
+                            toggleYear,
+                            toggleRates,
+                            toggleMovieLength,
+                            props.currentView
+                        )
+                    "
+                    >Применить</b-button
+                >
+                <b-button
+                    @click.stop="clearStateButton"
+                    variant="outline-secondary"
+                    >Очистить</b-button
+                >
             </div>
         </b-dropdown-form>
     </b-nav-item-dropdown>
@@ -118,7 +137,30 @@ const clearStateButton = () => {
     width: 400px;
 }
 
-// .drop_item {
+p {
+    margin-top: 10px;
+    margin-bottom: 3px;
+}
 
-// }
+.btn_disabled {
+    color: gold;
+    border: 1px solid gold;
+    background: none;
+}
+
+.btn_disabled:hover {
+    background-color: gold;
+    color: #fff;
+}
+
+.rates_group {
+    display: flex;
+    justify-content: space-around;
+}
+
+.btn_zone {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 25px;
+}
 </style>

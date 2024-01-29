@@ -25,71 +25,104 @@ onMounted(() => {
 })
 </script>
 
-<template>
+<template style = "min-height: 100vh;">
     <NavBar :currentView="view" />
-    <div class="cont">
-        <b-card no-body>
-            <b-tabs
-                v-model="view"
-                card
-                fill
+    <!-- <div class="cont"> -->
+    <b-card no-body>
+        <b-tabs
+            v-model="view"
+            card
+            fill
+        >
+            <b-tab
+                title="Закладки"
+                active
             >
-                <b-tab
-                    title="Закладки"
-                    active
-                >
-                    <div class="movie_cont">
-                        <router-link
-                            v-if="
-                                SortedStore.sortedBookmarks &&
-                                SortedStore.sortedBookmarks.length !== 0
-                            "
-                            v-for="sorted_film in SortedStore.sortedBookmarks"
-                            :key="sorted_film.id"
-                            :to="{
-                                name: 'film',
-                                params: { id: sorted_film.id },
-                            }"
-                        >
-                            <MovieCard :movieData="sorted_film" />
-                        </router-link>
-                        <router-link
-                            v-else
-                            v-for="film in Favourites.bookmarkedFilms"
-                            :key="film.id"
-                            :to="{ name: 'film', params: { id: film.id } }"
-                        >
-                            <MovieCard :movieData="film" />
-                        </router-link>
-                    </div>
-                </b-tab>
-                <b-tab title="Понравилось">
-                    <div class="movie_cont">
-                        <router-link
-                            v-if="
-                                SortedStore.sortedRates &&
-                                SortedStore.sortedRates.length !== 0
-                            "
-                            v-for="sorted_film in SortedStore.sortedRates"
-                            :key="sorted_film.id"
-                            :to="{
-                                name: 'film',
-                                params: { id: sorted_film.id },
-                            }"
-                        >
-                            <MovieCard :movieData="sorted_film" />
-                        </router-link>
-                        <router-link
-                            v-else
-                            v-for="film in Favourites.ratedFilms"
-                            :key="film.id"
-                            :to="{ name: 'film', params: { id: film.id } }"
-                        >
-                            <MovieCard :movieData="film" />
-                        </router-link>
-                    </div>
-                </b-tab>
-            </b-tabs>
-        </b-card>
-    </div>
+                <div class="movie_cont">
+                    <router-link
+                        v-if="
+                            SortedStore.sortedBookmarks &&
+                            SortedStore.sortedBookmarks.length !== 0
+                        "
+                        v-for="sorted_film in SortedStore.sortedBookmarks"
+                        :key="sorted_film.id"
+                        :to="{
+                            name: 'film',
+                            params: { id: sorted_film.id },
+                        }"
+                    >
+                        <MovieCard :movieData="sorted_film" />
+                    </router-link>
+                    <router-link
+                        v-else
+                        v-for="film in Favourites.bookmarkedFilms"
+                        :key="film.id"
+                        :to="{ name: 'film', params: { id: film.id } }"
+                    >
+                        <MovieCard :movieData="film" />
+                    </router-link>
+                </div>
+            </b-tab>
+            <b-tab title="Понравилось">
+                <div class="movie_cont">
+                    <router-link
+                        v-if="
+                            SortedStore.sortedRates &&
+                            SortedStore.sortedRates.length !== 0
+                        "
+                        v-for="sorted_film in SortedStore.sortedRates"
+                        :key="sorted_film.id"
+                        :to="{
+                            name: 'film',
+                            params: { id: sorted_film.id },
+                        }"
+                    >
+                        <MovieCard :movieData="sorted_film" />
+                    </router-link>
+                    <router-link
+                        v-else
+                        v-for="film in Favourites.ratedFilms"
+                        :key="film.id"
+                        :to="{ name: 'film', params: { id: film.id } }"
+                    >
+                        <MovieCard :movieData="film" />
+                    </router-link>
+                </div>
+            </b-tab>
+        </b-tabs>
+    </b-card>
+    <!-- </div> -->
 </template>
+
+<style lang="scss">
+@import "@/assets/my-styles.scss";
+
+.card-header:first-child {
+    background-color: #000000;
+    border: none;
+}
+
+.card-header-tabs .nav-link.active {
+    background-color: $main-bg-color;
+}
+
+.tab-content > .active {
+    background-color: $main-bg-color;
+}
+
+.nav-tabs .nav-link.active {
+    color: gold;
+}
+
+.card-body {
+    padding: 0px;
+}
+
+.nav-tabs .nav-link {
+    color: #fff;
+}
+
+.card {
+    border: none;
+}
+</style>

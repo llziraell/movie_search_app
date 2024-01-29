@@ -1,20 +1,28 @@
 <script setup>
 import { useRoute } from "vue-router"
-import { ref, onBeforeMount, onMounted } from "vue"
+import { ref, onBeforeMount, onMounted, computed, watch } from "vue"
 import { useFilmsStore } from "@/stores/FilmsStore.js"
 import { useLocalStore } from "@/stores/LocalStore.js"
+
+import { onBeforeRouteUpdate } from "vue-router"
 
 import RecommendBlock from "@/components/RecommendBlock.vue"
 
 const route = useRoute()
-const film_id = ref(0)
+const film_id = ref(263531)
 const Films = useFilmsStore()
 const Favourites = useLocalStore()
 const isBackgroundLoaded = ref(false)
 
-onBeforeMount(() => {
-    film_id.value = route.params.id
-    Films.getFilmById(film_id.value)
+onBeforeRouteUpdate((to, from, next) => {
+    film_id.value = to.params.id
+    Favourites.getLocalStoreData(film_id.value)
+    loadFilmData(film_id.value)
+    next()
+})
+
+const loadFilmData = (film_id) => {
+    Films.getFilmById(film_id)
 
     const backgroundImageUrl = Films.selectedFilm[0].poster.url
 
@@ -25,11 +33,14 @@ onBeforeMount(() => {
     }
 
     Films.getRecommendFilms(Films.selectedFilm[0])
+}
+
+onBeforeMount(() => {
+    film_id.value = route.params.id
+    Favourites.getLocalStoreData(film_id.value)
+    loadFilmData(film_id.value)
 })
 
-onMounted(() => {
-    Favourites.getLocalStoreData(film_id.value)
-})
 </script>
 
 <template>
@@ -93,12 +104,18 @@ onMounted(() => {
                     Смотреть похожие:
                 </h4>
                 <div class="film_circles">
+                    <!-- <RecommendBlock
+                        v-for="film in Films.recommendFilms"
+                        :key="film.id"
+                        :to="{ name: 'film', params: { id: film.id } }"
+                        :movieData="film"
+                    /> -->
                     <router-link
-                        v-for="(film, index) in Films.recommendFilms"
-                        :key="index"
+                        v-for="film in Films.recommendFilms"
+                        :key="film.id"
                         :to="{ name: 'film', params: { id: film.id } }"
                     >
-                    <RecommendBlock  :movieData="film"></RecommendBlock>
+                        <RecommendBlock :movieData="film" />
                     </router-link>
                 </div>
             </div>
@@ -193,16 +210,6 @@ onMounted(() => {
 
 .active_bookmark_img {
     background-image: url("@/assets/active_bookmark.png");
-}
-
-.rated {
-    color: $rated;
-}
-
-.rates {
-    margin-top: 10px;
-    margin-right: 7px;
-    cursor: pointer;
 }
 
 .recommend {

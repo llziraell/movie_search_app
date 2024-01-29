@@ -1,10 +1,8 @@
 <script setup>
 import { defineProps } from "vue"
-import { useFilmsStore } from "@/stores/FilmsStore"
-const Films = useFilmsStore()
 
 const props = defineProps({
-    movieData: [],
+    movieData: {},
 })
 </script>
 

@@ -1,15 +1,12 @@
 <script setup>
-import { ref } from "vue"
+import { defineProps } from "vue"
 
-import SortBlock from '@/components/SortBlock.vue'
-
+import SortBlock from "@/components/SortBlock.vue"
 import SearchBlock from "@/components/SearchBlock.vue"
 
 const props = defineProps({
-    currentView: String
+    currentView: String,
 })
-
-
 </script>
 
 <template>
@@ -19,18 +16,26 @@ const props = defineProps({
         v-b-color-mode="'dark'"
         sticky="top"
     >
-        <b-navbar-brand href="#" @click="$router.push(`${'/'}`)">Поиск кино</b-navbar-brand>
+        <b-navbar-brand
+            @click="$router.push(`${'/'}`)"
+            style = "cursor: pointer;"
+            >Поиск кино</b-navbar-brand
+        >
         <b-navbar-toggle target="nav-collapse" />
         <b-collapse
             id="nav-collapse"
             is-nav
         >
-            <router-link to="favourites" class = "favourites_link">Избранное</router-link>
+            <router-link
+                to="favourites"
+                class="favourites_link"
+                >Избранное</router-link
+            >
             <b-navbar-nav class="ms-auto mb-2 mb-lg-0">
-                <sort-block :currentView = "props.currentView"></sort-block>
+                <sort-block :currentView="props.currentView"></sort-block>
             </b-navbar-nav>
             <b-nav-form class="d-flex">
-                <SearchBlock v-if = "currentView === 'films'"></SearchBlock>
+                <SearchBlock v-if="currentView === 'films'"></SearchBlock>
             </b-nav-form>
         </b-collapse>
     </b-navbar>

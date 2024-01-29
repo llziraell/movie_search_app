@@ -57,7 +57,7 @@ export const useSortStore = defineStore("sortedFilms", {
             if (toggleRates.some((item) => item.state)) {
                 const rate = toggleRates.findIndex((btn) => btn.state === false)
                 films_for_sort = films_for_sort.filter((film) => {
-                    return film.rating.imdb <= rate
+                    return film.rating.imdb >= rate
                 })
                 console.log("rate")
                 console.log(films_for_sort)

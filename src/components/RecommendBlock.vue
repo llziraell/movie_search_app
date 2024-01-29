@@ -1,17 +1,15 @@
 <script setup>
+import router from "@/router";
+import { defineProps } from "vue"
 
-import { defineProps } from 'vue'
 const props = defineProps({
-    movieData: {}
+    movieData: {},
+    film_id: String
 })
-
 </script>
 
 <template>
-    <div
-        class="movie_recommend"
-        
-    >
+    <div class="movie_recommend">
         <div>
             <img
                 :src="movieData.poster.previewUrl"
@@ -25,7 +23,7 @@ const props = defineProps({
 </template>
 
 <style lang="scss">
-@import '@/assets/my-styles.scss';
+@import "@/assets/my-styles.scss";
 
 .movie_recommend {
     width: 100px;

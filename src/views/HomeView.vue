@@ -12,7 +12,6 @@ const SortedStore = useSortStore()
 
 onBeforeMount(() => {
     Films.getFilms()
-    // SortedStore.getSortedFilms()
 })
 
 const currentPageFilm = ref(1)
@@ -33,8 +32,6 @@ const paginatedFilms = computed(() => {
         }
     }
 })
-
-const view = ref('films')
 </script>
 
 <template>
@@ -53,7 +50,6 @@ const view = ref('films')
             </div>
             <div class="movie_cont">
                 <router-link
-                    
                     v-for="film in Films.searchedFilms"
                     :key="film.id"
                     :to="{ name: 'film', params: { id: film.id } }"
@@ -84,7 +80,7 @@ const view = ref('films')
             </router-link>
         </div>
     </div>
-    <div class="pagination">
+    <footer class="fixed-bottom pagination">
         <b-pagination
             v-if="SortedStore.sortedFilms && SortedStore.sortedFilms.length !== 0"
             class="custom-pagination"
@@ -103,7 +99,7 @@ const view = ref('films')
             first-number
             last-number
         />
-    </div>
+    </footer>
 </template>
 
 <style lang="scss">
@@ -127,14 +123,6 @@ const view = ref('films')
     color: $default_text_color;
 }
 
-.movie_cont {
-    display: flex;
-    background-color: $main-bg-color;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
 
 .title-line {
     font-size: 15px;

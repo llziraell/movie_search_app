@@ -14,12 +14,16 @@ export const useLocalStore = defineStore("favourites", {
         getLocalStoreData(film_id) {
             this.favourites =
                 JSON.parse(localStorage.getItem("favourites")) || []
+            console.log(this.favourites)
             if (film_id) {
                 const existFilm = this.favourites.find(
                     (film) => film.id === film_id
                 )
                 this.currentRate = existFilm ? existFilm.rate : 0
                 this.currentBookmark = existFilm ? existFilm.bookmark : false
+
+                console.log(this.currentRate)
+                console.log(this.currentBookmark)
             }
         },
 

@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue"
+
 import { useFilmsStore } from "@/stores/FilmsStore.js"
 const Films = useFilmsStore()
 
@@ -31,8 +32,9 @@ const inputFilm = ref("")
             <b-dropdown-item
                 v-for="film in Films.searchedFilms"
                 @click="inputFilm = film.name"
-                >{{ film.name }}</b-dropdown-item
             >
+                {{ film.name }}
+            </b-dropdown-item>
         </div>
     </b-dropdown>
 </template>
