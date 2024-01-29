@@ -22,7 +22,7 @@ export const useSortStore = defineStore("sortedFilms", {
         },
 
         getFilmsByCurrentView(currentView) {
-            if (currentView === "films") {
+            if (currentView === 2) {
                 return JSON.parse(localStorage.getItem("films"))
             } else {
                 const Favourites = useLocalStore()
@@ -35,7 +35,7 @@ export const useSortStore = defineStore("sortedFilms", {
         },
 
         setSortedFilmsByCurrentView(currentView, films_for_sort) {
-            if (currentView === "films") {
+            if (currentView === 2) {
                 this.sortedFilms = films_for_sort
                 this.totalFilms = this.sortedFilms.length
             } else if (currentView === 0) {

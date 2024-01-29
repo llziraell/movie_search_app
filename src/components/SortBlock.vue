@@ -5,7 +5,7 @@ import { useSortStore } from "@/stores/SortStore.js"
 const SortedStore = useSortStore()
 
 const props = defineProps({
-    currentView: String,
+    currentView: Number,
 })
 
 const currentRate = ref(0)

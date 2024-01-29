@@ -14,6 +14,8 @@ onBeforeMount(() => {
     Films.getFilms()
 })
 
+const view = ref(2)
+
 const currentPageFilm = ref(1)
 const currentPageSortedFilm = ref(1)
 
@@ -35,7 +37,7 @@ const paginatedFilms = computed(() => {
 </script>
 
 <template>
-    <NavBar currentView ="films" />
+    <NavBar :currentView = "view" />
     <div class="cont">
         <div v-if="Films.isSearchBtnActive">
             <div class="title-line">

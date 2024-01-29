@@ -9,7 +9,7 @@ const Favourites = useLocalStore()
 import { useSortStore } from "@/stores/SortStore.js"
 const SortedStore = useSortStore()
 
-const view = ref("")
+const view = ref(null)
 
 // const getViewName = computed(() => {
 //     console.log(typeof(view.value))

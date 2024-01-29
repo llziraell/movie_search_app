@@ -1,5 +1,5 @@
 <script setup>
-import { useRoute } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 import { ref, onBeforeMount, onMounted, computed, watch } from "vue"
 import { useFilmsStore } from "@/stores/FilmsStore.js"
 import { useLocalStore } from "@/stores/LocalStore.js"
@@ -9,7 +9,8 @@ import { onBeforeRouteUpdate } from "vue-router"
 import RecommendBlock from "@/components/RecommendBlock.vue"
 
 const route = useRoute()
-const film_id = ref(263531)
+const router = useRouter()
+const film_id = ref(null)
 const Films = useFilmsStore()
 const Favourites = useLocalStore()
 const isBackgroundLoaded = ref(false)
@@ -41,6 +42,10 @@ onBeforeMount(() => {
     loadFilmData(film_id.value)
 })
 
+const backStep = ()=>{
+    router.go(-1)
+}
+
 </script>
 
 <template>
@@ -53,7 +58,7 @@ onBeforeMount(() => {
     >
         <span
             class="return"
-            @click="$router.push(`${'/'}`)"
+            @click="backStep()"
             >&lt;-</span
         >
         <div class="film_poster">

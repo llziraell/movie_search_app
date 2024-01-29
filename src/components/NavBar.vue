@@ -5,7 +5,7 @@ import SortBlock from "@/components/SortBlock.vue"
 import SearchBlock from "@/components/SearchBlock.vue"
 
 const props = defineProps({
-    currentView: String,
+    currentView: Number,
 })
 </script>
 
@@ -35,7 +35,7 @@ const props = defineProps({
                 <sort-block :currentView="props.currentView"></sort-block>
             </b-navbar-nav>
             <b-nav-form class="d-flex">
-                <SearchBlock v-if="currentView === 'films'"></SearchBlock>
+                <SearchBlock v-if="currentView === 2"></SearchBlock>
             </b-nav-form>
         </b-collapse>
     </b-navbar>
