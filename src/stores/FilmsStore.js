@@ -32,8 +32,6 @@ export const useFilmsStore = defineStore("films", {
         searchFilms(inputFilm) {
             this.closeSearchedFilms()
 
-            console.log(inputFilm)
-
             if (inputFilm === "") {
                 return (this.searchedFilms = [])
             } else {
@@ -45,37 +43,31 @@ export const useFilmsStore = defineStore("films", {
             }
         },
 
-        //???
         showSearchedFilms(inputFilm) {
+            // при полном совпадении названия ищется только один фильм, иначе - все фильмы из выпадающего списка
             const fullConcurrence = this.films.find(
                 (film) => film.name === inputFilm
             )
-
-            // console.log(typeof(fullConcurrence))
 
             if (fullConcurrence) {
                 this.searchedFilms = []
                 this.searchedFilms.push(fullConcurrence)
             }
 
-            console.log(typeof(this.searchedFilms))
             if (this.searchedFilms.length !== 0) {
                 this.isSearchBtnActive = true
             }
-
-            console.log(this.searchedFilms)
         },
 
         closeSearchedFilms() {
             this.isSearchBtnActive = false
         },
 
-        getFilmById(film_id) {
+        getFilmById(filmId) {
             const storedFilms = JSON.parse(localStorage.getItem("films")) || []
             this.selectedFilm = storedFilms.filter((film) => {
-                return film.id === film_id
+                return film.id === filmId
             })
-            console.log(this.selectedFilm)
         },
 
         getRecommendFilms(selectedFilm) {
@@ -83,17 +75,16 @@ export const useFilmsStore = defineStore("films", {
 
             this.recommendFilms = films.filter((film) => {
                 let nonRepeat = film.id !== selectedFilm.id
+                // рейтинг рекомендованного фильма должен быть не меньше текущего - 1
                 let byRate =
-                    parseInt(selectedFilm.rating.imdb) >= film.rating.imdb &&
-                    parseInt(selectedFilm.rating.imdb) <
-                        parseInt(film.rating.imdb) + 1
+                    parseInt(film.rating.imdb) >=
+                    parseInt(selectedFilm.rating.imdb) - 1
                 let byType = selectedFilm.type === film.type
                 return byType && byRate && nonRepeat
             })
             if (this.recommendFilms.length >= 5) {
                 this.recommendFilms = this.recommendFilms.slice(0, 5)
             }
-            console.log(this.recommendFilms)
         },
     },
 })

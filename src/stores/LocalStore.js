@@ -11,86 +11,92 @@ export const useLocalStore = defineStore("favourites", {
         films: null,
     }),
     actions: {
-        getLocalStoreData(film_id) {
+        getLocalStoreData(filmId) {
+            // массив хранит в себе информацию о оценках и закладках фильма по id фильма
             this.favourites =
                 JSON.parse(localStorage.getItem("favourites")) || []
-            console.log(this.favourites)
-            if (film_id) {
+            if (filmId) {
                 const existFilm = this.favourites.find(
-                    (film) => film.id === film_id
+                    (film) => film.id === filmId
                 )
                 this.currentRate = existFilm ? existFilm.rate : 0
                 this.currentBookmark = existFilm ? existFilm.bookmark : false
-
-                console.log(this.currentRate)
-                console.log(this.currentBookmark)
             }
         },
 
-        setRate(rate, film_id) {
-            const film_info = {
-                id: film_id,
+        setRate(rate, filmId) {
+            const filmInfo = {
+                id: filmId,
                 rate: rate,
             }
 
             const existFilmIndex = this.favourites.findIndex(
-                (film) => film.id === film_info.id
+                (film) => film.id === filmInfo.id
             )
 
+            // если информация об оценках/закладках фильма существует
             if (existFilmIndex !== -1) {
-                // существует
+                // если снова ставим ту же оценку - убираем ее
                 if (
                     this.favourites[existFilmIndex].rate ===
-                    Number(film_info.rate)
+                    Number(filmInfo.rate)
                 ) {
-                    this.favourites[existFilmIndex].rate = 0 // одинаковые оценки
+                    this.favourites[existFilmIndex].rate = 0
                     this.currentRate = 0
                 } else {
-                    this.favourites[existFilmIndex].rate = film_info.rate // измененная оценка
+                    // иначе - меняем
+                    this.favourites[existFilmIndex].rate = filmInfo.rate
                     this.currentRate = rate
                 }
             } else {
-                this.favourites.push(film_info) // оценки еще неt
+                // если еще не существует - добавляем
+                this.favourites.push(filmInfo)
                 this.currentRate = rate
             }
 
             localStorage.setItem("favourites", JSON.stringify(this.favourites))
         },
 
-        setBookmark(film_id) {
-            const film_info = {
-                id: film_id,
+        setBookmark(filmId) {
+            const filmInfo = {
+                id: filmId,
                 bookmark: true,
             }
 
             const existFilmIndex = this.favourites.findIndex(
-                (film) => film.id === film_info.id
+                (film) => film.id === filmInfo.id
             )
 
             if (existFilmIndex !== -1) {
-                // существует
+                // если закладка есть - убираем
                 this.favourites[existFilmIndex].bookmark =
-                    !this.favourites[existFilmIndex].bookmark // одинаковые оценки
+                    !this.favourites[existFilmIndex].bookmark
                 this.currentBookmark = this.favourites[existFilmIndex].bookmark
             } else {
-                this.favourites.push(film_info) // оценки еще неt
+                // иначе - добавляем
+                this.favourites.push(filmInfo) 
                 this.currentBookmark = true
             }
 
             localStorage.setItem("favourites", JSON.stringify(this.favourites))
         },
 
+        // общее получение массивов оцененных и помеченных фильмов для отображения
         getMarkedFilms() {
             this.getLocalStoreData()
-            const films = JSON.parse(localStorage.getItem("films"))   
+            const films = JSON.parse(localStorage.getItem("films"))
 
             this.ratedFilms = films.filter((film) => {
-                const existFilm = this.favourites.find((fav_film) => fav_film.id === film.id)
+                const existFilm = this.favourites.find(
+                    (fav_film) => fav_film.id === film.id
+                )
                 return existFilm && existFilm.rate > 0
-              })
+            })
 
             this.bookmarkedFilms = films.filter((film) => {
-                const existFilm = this.favourites.find((fav_film) => fav_film.id === film.id)
+                const existFilm = this.favourites.find(
+                    (fav_film) => fav_film.id === film.id
+                )
                 return existFilm && existFilm.bookmark === true
             })
         },

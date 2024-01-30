@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, defineProps } from "vue"
+import { computed, ref, defineProps, onMounted } from "vue"
 
 import { useSortStore } from "@/stores/SortStore.js"
 const SortedStore = useSortStore()
@@ -58,6 +58,24 @@ const clearStateButton = () => {
 
     SortedStore.clearSortedStore()
 }
+
+const getSortedPageName = computed(() => {
+    switch (props.currentView) {
+        case 0:
+        clearStateButton()
+            return "закладки"
+        case 1:
+        clearStateButton()
+            return "оцененные"
+        case 2:
+        clearStateButton()
+            return "фильмы"
+    }
+})
+
+onMounted(() => {
+    clearStateButton()
+})
 </script>
 
 <template>
@@ -66,6 +84,7 @@ const clearStateButton = () => {
             <b-button class="btn_disabled">Фильтр</b-button>
         </template>
         <b-dropdown-form class="sort_form">
+            <p style="color: gold">Ваши {{ getSortedPageName }}</p>
             <b-form-group>
                 <p>Год:</p>
                 <b-button-group size="sm">

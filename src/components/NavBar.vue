@@ -18,7 +18,7 @@ const props = defineProps({
     >
         <b-navbar-brand
             @click="$router.push(`${'/'}`)"
-            style = "cursor: pointer;"
+            style="cursor: pointer"
             >Поиск кино</b-navbar-brand
         >
         <b-navbar-toggle target="nav-collapse" />
@@ -32,10 +32,10 @@ const props = defineProps({
                 >Избранное</router-link
             >
             <b-navbar-nav class="ms-auto mb-2 mb-lg-0">
-                <sort-block :currentView="props.currentView"></sort-block>
+                <SortBlock :currentView="props.currentView" />
             </b-navbar-nav>
             <b-nav-form class="d-flex">
-                <SearchBlock v-if="currentView === 2"></SearchBlock>
+                <SearchBlock v-if="props.currentView === 2" />
             </b-nav-form>
         </b-collapse>
     </b-navbar>
@@ -50,5 +50,9 @@ const props = defineProps({
 
 .favourites_link {
     color: gold;
+}
+
+a:active {
+    text-decoration: underline;
 }
 </style>

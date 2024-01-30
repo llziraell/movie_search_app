@@ -14,7 +14,7 @@ const inputFilm = ref("")
             class="input_form"
         >
             <b-form-input
-                class="me-2"
+                class="me-2 input_form"
                 placeholder="Ищу..."
                 type="text"
                 v-model.trim="inputFilm"

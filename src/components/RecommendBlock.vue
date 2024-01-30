@@ -1,10 +1,9 @@
 <script setup>
-import router from "@/router";
 import { defineProps } from "vue"
 
 const props = defineProps({
     movieData: {},
-    film_id: String
+    filmId: String,
 })
 </script>
 

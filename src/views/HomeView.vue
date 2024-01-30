@@ -10,24 +10,26 @@ const Films = useFilmsStore()
 import { useSortStore } from "@/stores/SortStore"
 const SortedStore = useSortStore()
 
-onBeforeMount(() => {
-    Films.getFilms()
-})
-
 const view = ref(2)
 
 const currentPageFilm = ref(1)
 const currentPageSortedFilm = ref(1)
 
+onBeforeMount(() => {
+    Films.getFilms()
+})
+
 const paginatedFilms = computed(() => {
     return (selectedStore) => {
         if (Films.films) {
             if (selectedStore.sortedFilms) {
-                const start = (currentPageSortedFilm.value - 1) * selectedStore.perPage
+                const start =
+                    (currentPageSortedFilm.value - 1) * selectedStore.perPage
                 const end = start + selectedStore.perPage
                 return selectedStore.sortedFilms.slice(start, end)
             } else if (selectedStore.films) {
-                const start = (currentPageFilm.value - 1) * selectedStore.perPage
+                const start =
+                    (currentPageFilm.value - 1) * selectedStore.perPage
                 const end = start + selectedStore.perPage
                 return selectedStore.films.slice(start, end)
             }
@@ -37,7 +39,7 @@ const paginatedFilms = computed(() => {
 </script>
 
 <template>
-    <NavBar :currentView = "view" />
+    <NavBar :currentView="view" />
     <div class="cont">
         <div v-if="Films.isSearchBtnActive">
             <div class="title-line">
@@ -47,8 +49,8 @@ const paginatedFilms = computed(() => {
                         @click="Films.closeSearchedFilms()"
                         style="cursor: pointer"
                         >&#10006;</span
-                    ></span
-                >
+                    >
+                </span>
             </div>
             <div class="movie_cont">
                 <router-link
@@ -63,17 +65,25 @@ const paginatedFilms = computed(() => {
                 <span>Другие</span>
             </div>
         </div>
-        <div class="movie_cont">
+        <div
+            class="movie_cont"
+            v-if="
+                SortedStore.sortedFilms && SortedStore.sortedFilms.length !== 0
+            "
+        >
             <router-link
-                v-if="SortedStore.sortedFilms && SortedStore.sortedFilms.length !== 0"
-                v-for="sorted_film in paginatedFilms(SortedStore)"
-                :key="sorted_film.id"
-                :to="{ name: 'film', params: { id: sorted_film.id } }"
+                v-for="sortedFilm in paginatedFilms(SortedStore)"
+                :key="sortedFilm.id"
+                :to="{ name: 'film', params: { id: sortedFilm.id } }"
             >
-                <MovieCard :movieData="sorted_film" />
+                <MovieCard :movieData="sortedFilm" />
             </router-link>
+        </div>
+        <div
+            class="movie_cont"
+            v-else
+        >
             <router-link
-                v-else
                 v-for="film in paginatedFilms(Films)"
                 :key="film.id"
                 :to="{ name: 'film', params: { id: film.id } }"
@@ -84,7 +94,9 @@ const paginatedFilms = computed(() => {
     </div>
     <footer class="fixed-bottom pagination">
         <b-pagination
-            v-if="SortedStore.sortedFilms && SortedStore.sortedFilms.length !== 0"
+            v-if="
+                SortedStore.sortedFilms && SortedStore.sortedFilms.length !== 0
+            "
             class="custom-pagination"
             v-model="currentPageSortedFilm"
             :total-rows="SortedStore.totalFilms"
@@ -124,7 +136,6 @@ const paginatedFilms = computed(() => {
     border-color: $default_bg_color;
     color: $default_text_color;
 }
-
 
 .title-line {
     font-size: 15px;

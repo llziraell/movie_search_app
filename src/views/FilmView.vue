@@ -1,29 +1,31 @@
 <script setup>
-import { useRoute, useRouter } from "vue-router"
-import { ref, onBeforeMount, onMounted, computed, watch } from "vue"
-import { useFilmsStore } from "@/stores/FilmsStore.js"
-import { useLocalStore } from "@/stores/LocalStore.js"
-
-import { onBeforeRouteUpdate } from "vue-router"
+import { useRoute, useRouter, onBeforeRouteUpdate } from "vue-router"
+import { ref, onBeforeMount } from "vue"
 
 import RecommendBlock from "@/components/RecommendBlock.vue"
 
+import { useFilmsStore } from "@/stores/FilmsStore.js"
+const Films = useFilmsStore()
+
+import { useLocalStore } from "@/stores/LocalStore.js"
+const Favourites = useLocalStore()
+
 const route = useRoute()
 const router = useRouter()
-const film_id = ref(null)
-const Films = useFilmsStore()
-const Favourites = useLocalStore()
+
+const filmId = ref(null)
 const isBackgroundLoaded = ref(false)
 
+// при переходе с одного фильма на другой
 onBeforeRouteUpdate((to, from, next) => {
-    film_id.value = to.params.id
-    Favourites.getLocalStoreData(film_id.value)
-    loadFilmData(film_id.value)
+    filmId.value = to.params.id
+    Favourites.getLocalStoreData(filmId.value)
+    loadFilmData(filmId.value)
     next()
 })
 
-const loadFilmData = (film_id) => {
-    Films.getFilmById(film_id)
+const loadFilmData = (filmId) => {
+    Films.getFilmById(filmId)
 
     const backgroundImageUrl = Films.selectedFilm[0].poster.url
 
@@ -37,15 +39,15 @@ const loadFilmData = (film_id) => {
 }
 
 onBeforeMount(() => {
-    film_id.value = route.params.id
-    Favourites.getLocalStoreData(film_id.value)
-    loadFilmData(film_id.value)
+    filmId.value = route.params.id
+    Favourites.getLocalStoreData(filmId.value)
+    loadFilmData(filmId.value)
 })
 
-const backStep = ()=>{
+// возвращение на предыдущий путь
+const backStep = () => {
     router.go(-1)
 }
-
 </script>
 
 <template>
@@ -68,7 +70,7 @@ const backStep = ()=>{
             />
             <span
                 class="movie__bookmark"
-                @click="Favourites.setBookmark(film_id)"
+                @click="Favourites.setBookmark(filmId)"
                 :class="
                     Favourites.currentBookmark
                         ? 'active_bookmark_img'
@@ -80,7 +82,7 @@ const backStep = ()=>{
                 class="rates"
                 v-for="rate in Favourites.maxRate"
                 :key="rate"
-                @click="Favourites.setRate(rate, film_id)"
+                @click="Favourites.setRate(rate, filmId)"
                 :class="{ rated: rate <= Favourites.currentRate }"
                 >★</span
             >
@@ -109,12 +111,6 @@ const backStep = ()=>{
                     Смотреть похожие:
                 </h4>
                 <div class="film_circles">
-                    <!-- <RecommendBlock
-                        v-for="film in Films.recommendFilms"
-                        :key="film.id"
-                        :to="{ name: 'film', params: { id: film.id } }"
-                        :movieData="film"
-                    /> -->
                     <router-link
                         v-for="film in Films.recommendFilms"
                         :key="film.id"

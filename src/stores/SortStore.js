@@ -8,7 +8,7 @@ export const useSortStore = defineStore("sortedFilms", {
         sortedFilms: null,
         perPage: 25,
         totalFilms: 0,
-        films_for_sort: [],
+        filmsForSort: [],
 
         sortedRates: [],
         sortedBookmarks: [],
@@ -34,53 +34,54 @@ export const useSortStore = defineStore("sortedFilms", {
             }
         },
 
-        setSortedFilmsByCurrentView(currentView, films_for_sort) {
+        setSortedFilmsByCurrentView(currentView, filmsForSort) {
             if (currentView === 2) {
-                this.sortedFilms = films_for_sort
+                this.sortedFilms = filmsForSort
                 this.totalFilms = this.sortedFilms.length
             } else if (currentView === 0) {
-                this.sortedBookmarks = films_for_sort
+                this.sortedBookmarks = filmsForSort
             } else if (currentView === 1) {
-                this.sortedRates = films_for_sort
+                this.sortedRates = filmsForSort
             }
         },
 
         sortFilms(toggleYear, toggleRates, toggleMovieLength, currentView) {
-            console.log(currentView)
+            // получаем массив для сортировки в зависимости от вида
+            let filmsForSort = this.getFilmsByCurrentView(currentView)
 
-            let films_for_sort = this.getFilmsByCurrentView(currentView)
-
-            console.log(films_for_sort)
-
-            console.log(toggleRates.map((item) => item.state))
-
+            // по оценке
             if (toggleRates.some((item) => item.state)) {
-                const rate = toggleRates.findIndex((btn) => btn.state === false)
-                films_for_sort = films_for_sort.filter((film) => {
+                let rate = toggleRates.findIndex((btn) => btn.state === false)
+                // у 10ой звезды 
+                if (rate === -1) {
+                    rate = 9.1
+                }
+                console.log(rate)
+                filmsForSort = filmsForSort.filter((film) => {
                     return film.rating.imdb >= rate
                 })
                 console.log("rate")
-                console.log(films_for_sort)
+                console.log(filmsForSort)
             }
 
+            // по хронометражу
             if (toggleMovieLength.some((item) => item.state)) {
-                console.log(films_for_sort)
                 if (toggleMovieLength[0].state) {
-                    films_for_sort = films_for_sort.filter((film) => {
-                        console.log(film)
+                    filmsForSort = filmsForSort.filter((film) => {
                         return film.movieLength < 90
                     })
                 } else {
-                    films_for_sort = films_for_sort.filter((film) => {
+                    filmsForSort = filmsForSort.filter((film) => {
                         return film.movieLength >= 90
                     })
                 }
                 console.log("length")
-                console.log(films_for_sort)
+                console.log(filmsForSort)
             }
 
+            // по периоду
             if (toggleYear.some((item) => item.state)) {
-                films_for_sort = films_for_sort.filter((film) => {
+                filmsForSort = filmsForSort.filter((film) => {
                     return toggleYear.some(({ caption, state }) => {
                         switch (caption) {
                             case "70-ые":
@@ -120,11 +121,13 @@ export const useSortStore = defineStore("sortedFilms", {
                         }
                     })
                 })
-                console.log("year")
-                console.log(films_for_sort)
             }
-
-            this.setSortedFilmsByCurrentView(currentView, films_for_sort)
+            if (filmsForSort.length === 0) {
+                alert('По вашему запросы ничего не найдено')
+                this.clearSortedStore()
+            } else {
+               this.setSortedFilmsByCurrentView(currentView, filmsForSort) 
+            }
         },
     },
 })
