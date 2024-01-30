@@ -56,12 +56,9 @@ export const useSortStore = defineStore("sortedFilms", {
                 if (rate === -1) {
                     rate = 9.1
                 }
-                console.log(rate)
                 filmsForSort = filmsForSort.filter((film) => {
                     return film.rating.imdb >= rate
                 })
-                console.log("rate")
-                console.log(filmsForSort)
             }
 
             // по хронометражу
@@ -75,8 +72,6 @@ export const useSortStore = defineStore("sortedFilms", {
                         return film.movieLength >= 90
                     })
                 }
-                console.log("length")
-                console.log(filmsForSort)
             }
 
             // по периоду
