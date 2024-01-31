@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import {BootstrapVueNext} from 'bootstrap-vue-next'
+import { BootstrapVueNext } from 'bootstrap-vue-next'
 
 import './assets/main.css'
 import 'bootstrap/dist/css/bootstrap.css'

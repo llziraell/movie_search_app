@@ -2,7 +2,8 @@
 import { computed, ref, defineProps, onMounted } from "vue"
 
 import { useSortStore } from "@/stores/SortStore.js"
-const SortedStore = useSortStore()
+
+const sortedStore = useSortStore()
 
 const props = defineProps({
     currentView: Number,
@@ -56,7 +57,7 @@ const clearStateButton = () => {
         btn.state = false
     })
 
-    SortedStore.clearSortedStore()
+    sortedStore.clearSortedStore()
 }
 
 const getSortedPageName = computed(() => {
@@ -84,7 +85,9 @@ onMounted(() => {
             <b-button class="btn_disabled">Фильтр</b-button>
         </template>
         <b-dropdown-form class="sort_form">
-            <p style="color: gold">Ваши {{ getSortedPageName }}</p>
+            <p style="color: gold">
+                Ваши {{ getSortedPageName }}
+            </p>
             <b-form-group>
                 <p>Год:</p>
                 <b-button-group size="sm">
@@ -111,8 +114,9 @@ onMounted(() => {
                         :pressed.sync="btn.state"
                         @click.stop="toggleRateButton(idx)"
                         :class="{ rated: btn.state === true }"
-                        >★</span
                     >
+                        ★
+                    </span>
                 </b-button-group>
                 <p>Хронометраж:</p>
                 <b-button-group size="sm">
@@ -131,21 +135,16 @@ onMounted(() => {
             <div class="btn_zone">
                 <b-button
                     variant="outline-success"
-                    @click="
-                        SortedStore.sortFilms(
-                            toggleYear,
-                            toggleRates,
-                            toggleMovieLength,
-                            props.currentView
-                        )
-                    "
-                    >Применить</b-button
+                    @click="sortedStore.sortFilms(toggleYear, toggleRates, toggleMovieLength, props.currentView)"
                 >
+                    Применить
+                </b-button>
                 <b-button
                     @click.stop="clearStateButton"
                     variant="outline-secondary"
-                    >Очистить</b-button
                 >
+                    Очистить
+                </b-button>
             </div>
         </b-dropdown-form>
     </b-nav-item-dropdown>
@@ -170,11 +169,6 @@ p {
 .btn_disabled:hover {
     background-color: gold;
     color: #fff;
-}
-
-.rates_group {
-    display: flex;
-    justify-content: space-around;
 }
 
 .btn_zone {

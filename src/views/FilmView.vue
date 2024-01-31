@@ -1,14 +1,14 @@
 <script setup>
 import { useRoute, useRouter, onBeforeRouteUpdate } from "vue-router"
-import { ref, onBeforeMount } from "vue"
+import { ref, onBeforeMount, computed } from "vue"
 
 import RecommendBlock from "@/components/RecommendBlock.vue"
 
 import { useFilmsStore } from "@/stores/FilmsStore.js"
-const Films = useFilmsStore()
-
 import { useLocalStore } from "@/stores/LocalStore.js"
-const Favourites = useLocalStore()
+
+const filmsStore = useFilmsStore()
+const favouritesStore = useLocalStore()
 
 const route = useRoute()
 const router = useRouter()
@@ -19,15 +19,15 @@ const isBackgroundLoaded = ref(false)
 // при переходе с одного фильма на другой
 onBeforeRouteUpdate((to, from, next) => {
     filmId.value = to.params.id
-    Favourites.getLocalStoreData(filmId.value)
+    favouritesStore.getLocalStoreData(filmId.value)
     loadFilmData(filmId.value)
     next()
 })
 
 const loadFilmData = (filmId) => {
-    Films.getFilmById(filmId)
+    filmsStore.getFilmById(filmId)
 
-    const backgroundImageUrl = Films.selectedFilm[0].poster.url
+    const backgroundImageUrl = filmsStore.selectedFilm[0].poster.url
 
     const image = new Image()
     image.src = backgroundImageUrl
@@ -35,12 +35,12 @@ const loadFilmData = (filmId) => {
         isBackgroundLoaded.value = true
     }
 
-    Films.getRecommendFilms(Films.selectedFilm[0])
+    filmsStore.getRecommendFilms(filmsStore.selectedFilm[0])
 }
 
 onBeforeMount(() => {
     filmId.value = route.params.id
-    Favourites.getLocalStoreData(filmId.value)
+    favouritesStore.getLocalStoreData(filmId.value)
     loadFilmData(filmId.value)
 })
 
@@ -48,71 +48,73 @@ onBeforeMount(() => {
 const backStep = () => {
     router.go(-1)
 }
+
+const toggleBookmarkClass = computed(() => {
+    return favouritesStore.currentBookmark? 'active_bookmark_img' : 'default_bookmark_img'
+})
 </script>
 
 <template>
     <div
         v-if="isBackgroundLoaded"
         class="cont film_cont bg-image"
-        :style="{
-            backgroundImage: `url(${Films.selectedFilm[0].poster.url})`,
-        }"
+        :style="{ backgroundImage: `url(${filmsStore.selectedFilm[0].poster.url})`}"
     >
         <span
             class="return"
             @click="backStep()"
-            >&lt;-</span
         >
+            &lt;-
+        </span>
         <div class="film_poster">
             <img
-                :src="Films.selectedFilm[0].poster.previewUrl"
+                :src="filmsStore.selectedFilm[0].poster.previewUrl"
                 class="movie__cover"
             />
             <span
                 class="movie__bookmark"
-                @click="Favourites.setBookmark(filmId)"
-                :class="
-                    Favourites.currentBookmark
-                        ? 'active_bookmark_img'
-                        : 'default_bookmark_img'
-                "
+                @click="favouritesStore.setBookmark(filmId)"
+                :class="toggleBookmarkClass"
             >
             </span>
-            <span
-                class="rates"
-                v-for="rate in Favourites.maxRate"
-                :key="rate"
-                @click="Favourites.setRate(rate, filmId)"
-                :class="{ rated: rate <= Favourites.currentRate }"
-                >★</span
-            >
+            <div class = "rates_group">
+                <span
+                    class="rates"
+                    v-for="rate in favouritesStore.maxRate"
+                    :key="rate"
+                    @click="favouritesStore.setRate(rate, filmId)"
+                    :class="{ rated: rate <= favouritesStore.currentRate }"
+                >
+                    ★
+                </span>
+            </div>
         </div>
         <div
             class="film_text"
             style="color: #fff"
         >
             <h1>
-                {{ Films.selectedFilm[0].name }} -
-                {{ Films.selectedFilm[0].alternativeName }}
+                {{ filmsStore.selectedFilm[0].name }} -
+                {{ filmsStore.selectedFilm[0].alternativeName }}
             </h1>
             <h5 style="color: gold">
-                {{ Films.selectedFilm[0].year }}
+                {{ filmsStore.selectedFilm[0].year }}
             </h5>
-            <div>{{ Films.selectedFilm[0].description }}</div>
+            <div>{{ filmsStore.selectedFilm[0].description }}</div>
             <div style="margin-top: 10px">
                 <img
                     src="@/assets/chrono.png"
                     style="filter: hue-rotate(90deg)"
                 />
-                {{ Films.selectedFilm[0].movieLength }} минут
+                {{ filmsStore.selectedFilm[0].movieLength }} минут
             </div>
             <div class="recommend">
-                <h4 v-if="Films.recommendFilms.length !== 0">
+                <h4 v-if="filmsStore.recommendFilms.length !== 0">
                     Смотреть похожие:
                 </h4>
                 <div class="film_circles">
                     <router-link
-                        v-for="film in Films.recommendFilms"
+                        v-for="film in filmsStore.recommendFilms"
                         :key="film.id"
                         :to="{ name: 'film', params: { id: film.id } }"
                     >
@@ -140,7 +142,6 @@ const backStep = () => {
 
 .bg-image {
     background-size: cover;
-    background-size: auto 100%;
     opacity: 0.8;
     background-position: right center;
 }

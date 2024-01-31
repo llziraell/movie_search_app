@@ -1,19 +1,27 @@
 <script setup>
-import { ref, onMounted } from "vue"
+import { ref, onMounted, computed } from "vue"
 
 import NavBar from "@/components/NavBar.vue"
 import MovieCard from "@/components/MovieCard.vue"
 
 import { useLocalStore } from "@/stores/LocalStore.js"
-const Favourites = useLocalStore()
-
 import { useSortStore } from "@/stores/SortStore.js"
-const SortedStore = useSortStore()
+
+const favouritesStore = useLocalStore()
+const sortedStore = useSortStore()
 
 const view = ref(null)
 
 onMounted(() => {
-    Favourites.getMarkedFilms()
+    favouritesStore.getMarkedFilms()
+})
+
+const isSortedBookmarksActive = computed(() =>{
+    return sortedStore.sortedBookmarks && sortedStore.sortedBookmarks.length !== 0
+})
+
+const isSortedRatesActive = computed(() =>{
+    return sortedStore.sortedRates && sortedStore.sortedRates.length !== 0
 })
 </script>
 
@@ -31,18 +39,12 @@ onMounted(() => {
             >
                 <div
                     class="movie_cont"
-                    v-if="
-                        SortedStore.sortedBookmarks &&
-                        SortedStore.sortedBookmarks.length !== 0
-                    "
+                    v-if="isSortedBookmarksActive"
                 >
                     <router-link
-                        v-for="sortedFilm in SortedStore.sortedBookmarks"
+                        v-for="sortedFilm in sortedStore.sortedBookmarks"
                         :key="sortedFilm.id"
-                        :to="{
-                            name: 'film',
-                            params: { id: sortedFilm.id },
-                        }"
+                        :to="{ name: 'film', params: { id: sortedFilm.id } }"
                     >
                         <MovieCard :movieData="sortedFilm" />
                     </router-link>
@@ -52,7 +54,7 @@ onMounted(() => {
                     class="movie_cont"
                 >
                     <router-link
-                        v-for="film in Favourites.bookmarkedFilms"
+                        v-for="film in favouritesStore.bookmarkedFilms"
                         :key="film.id"
                         :to="{ name: 'film', params: { id: film.id } }"
                     >
@@ -63,18 +65,12 @@ onMounted(() => {
             <b-tab title="Понравилось">
                 <div
                     class="movie_cont"
-                    v-if="
-                        SortedStore.sortedRates &&
-                        SortedStore.sortedRates.length !== 0
-                    "
+                    v-if="isSortedRatesActive"
                 >
                     <router-link
-                        v-for="sortedFilm in SortedStore.sortedRates"
+                        v-for="sortedFilm in sortedStore.sortedRates"
                         :key="sortedFilm.id"
-                        :to="{
-                            name: 'film',
-                            params: { id: sortedFilm.id },
-                        }"
+                        :to="{ name: 'film', params: { id: sortedFilm.id } }"
                     >
                         <MovieCard :movieData="sortedFilm" />
                     </router-link>
@@ -84,7 +80,7 @@ onMounted(() => {
                     class="movie_cont"
                 >
                     <router-link
-                        v-for="film in Favourites.ratedFilms"
+                        v-for="film in favouritesStore.ratedFilms"
                         :key="film.id"
                         :to="{ name: 'film', params: { id: film.id } }"
                     >

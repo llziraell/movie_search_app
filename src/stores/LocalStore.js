@@ -7,8 +7,7 @@ export const useLocalStore = defineStore("favourites", {
         currentRate: 0,
         currentBookmark: false,
         bookmarkedFilms: [],
-        ratedFilms: [],
-        films: null,
+        ratedFilms: []
     }),
     actions: {
         getLocalStoreData(filmId) {

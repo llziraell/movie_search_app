@@ -3,8 +3,6 @@ import { useLocalStore } from "@/stores/LocalStore.js"
 
 export const useSortStore = defineStore("sortedFilms", {
     state: () => ({
-        films_: null,
-        optionsFilms: {},
         sortedFilms: null,
         perPage: 25,
         totalFilms: 0,
@@ -25,11 +23,11 @@ export const useSortStore = defineStore("sortedFilms", {
             if (currentView === 2) {
                 return JSON.parse(localStorage.getItem("films"))
             } else {
-                const Favourites = useLocalStore()
+                const favourites = useLocalStore()
                 if (currentView === 0) {
-                    return Favourites.bookmarkedFilms
+                    return favourites.bookmarkedFilms
                 } else if (currentView === 1) {
-                    return Favourites.ratedFilms
+                    return favourites.ratedFilms
                 }
             }
         },

@@ -5,56 +5,62 @@ import NavBar from "@/components/NavBar.vue"
 import MovieCard from "@/components/MovieCard.vue"
 
 import { useFilmsStore } from "@/stores/FilmsStore"
-const Films = useFilmsStore()
-
 import { useSortStore } from "@/stores/SortStore"
-const SortedStore = useSortStore()
+
+const filmsStore = useFilmsStore()
+const sortedStore = useSortStore()
 
 const view = ref(2)
 
-const currentPageFilm = ref(1)
-const currentPageSortedFilm = ref(1)
+const currentPageOfFilms = ref(1)
+const currentPageOfSortedFilms = ref(1)
 
 onBeforeMount(() => {
-    Films.getFilms()
+    filmsStore.getFilms()
 })
 
 const paginatedFilms = computed(() => {
     return (selectedStore) => {
-        if (Films.films) {
+        if (filmsStore.films) {
             if (selectedStore.sortedFilms) {
                 const start =
-                    (currentPageSortedFilm.value - 1) * selectedStore.perPage
+                    (currentPageOfSortedFilms.value - 1) * selectedStore.perPage
                 const end = start + selectedStore.perPage
                 return selectedStore.sortedFilms.slice(start, end)
             } else if (selectedStore.films) {
                 const start =
-                    (currentPageFilm.value - 1) * selectedStore.perPage
+                    (currentPageOfFilms.value - 1) * selectedStore.perPage
                 const end = start + selectedStore.perPage
                 return selectedStore.films.slice(start, end)
             }
         }
     }
 })
+
+const isSortedFilmsActive = computed(() =>{
+    return sortedStore.sortedFilms && sortedStore.sortedFilms.length !== 0
+})
+
 </script>
 
 <template>
     <NavBar :currentView="view" />
     <div class="cont">
-        <div v-if="Films.isSearchBtnActive">
+        <div v-if="filmsStore.isSearchBtnActive">
             <div class="title-line">
-                <span
-                    >Найдено
+                <span>
+                    Найдено
                     <span
-                        @click="Films.closeSearchedFilms()"
+                        @click="filmsStore.closeSearchedFilms()"
                         style="cursor: pointer"
-                        >&#10006;</span
                     >
+                        &#10006;
+                    </span>
                 </span>
             </div>
             <div class="movie_cont">
                 <router-link
-                    v-for="film in Films.searchedFilms"
+                    v-for="film in filmsStore.searchedFilms"
                     :key="film.id"
                     :to="{ name: 'film', params: { id: film.id } }"
                 >
@@ -67,12 +73,10 @@ const paginatedFilms = computed(() => {
         </div>
         <div
             class="movie_cont"
-            v-if="
-                SortedStore.sortedFilms && SortedStore.sortedFilms.length !== 0
-            "
+            v-if="isSortedFilmsActive"
         >
             <router-link
-                v-for="sortedFilm in paginatedFilms(SortedStore)"
+                v-for="sortedFilm in paginatedFilms(sortedStore)"
                 :key="sortedFilm.id"
                 :to="{ name: 'film', params: { id: sortedFilm.id } }"
             >
@@ -84,7 +88,7 @@ const paginatedFilms = computed(() => {
             v-else
         >
             <router-link
-                v-for="film in paginatedFilms(Films)"
+                v-for="film in paginatedFilms(filmsStore)"
                 :key="film.id"
                 :to="{ name: 'film', params: { id: film.id } }"
             >
@@ -94,22 +98,20 @@ const paginatedFilms = computed(() => {
     </div>
     <footer class="fixed-bottom pagination">
         <b-pagination
-            v-if="
-                SortedStore.sortedFilms && SortedStore.sortedFilms.length !== 0
-            "
+            v-if="isSortedFilmsActive"
             class="custom-pagination"
-            v-model="currentPageSortedFilm"
-            :total-rows="SortedStore.totalFilms"
-            :per-page="SortedStore.perPage"
+            v-model="currentPageOfSortedFilms"
+            :total-rows="sortedStore.totalFilms"
+            :per-page="sortedStore.perPage"
             first-number
             last-number
         />
         <b-pagination
             v-else
             class="custom-pagination"
-            v-model="currentPageFilm"
-            :total-rows="Films.totalFilms"
-            :per-page="Films.perPage"
+            v-model="currentPageOfFilms"
+            :total-rows="filmsStore.totalFilms"
+            :per-page="filmsStore.perPage"
             first-number
             last-number
         />
